@@ -1,0 +1,484 @@
+###Linux env - Parrot OS
+##Instalando Bspwn y Sxhkd
+
+##1- Ejecutar  como root, qque tiene los paquetes necesarios para instalar bspwm y sxhdk:
+
+apt install build-essential git vim xcb libxcb-util0-dev libxcb-ewmh-dev libxcb-randr0-dev libxcb-icccm4-dev libxcb-keysyms1-dev libxcb-xinerama0-dev libasound2-dev libxcb-xtest0-dev libxcb-shape0-dev
+
+##2- Una vez ejecutado, se debe hacer un update y upgrade
+
+#apt update
+apt list --upgradable #(para ver los paquetes a ser actulizados)
+
+#para hacer un upgrade en parrot, ejejcutar un  comando especial de parrot:
+
+parrot-upgrade
+
+#################################################################################################################################
+#################################################################################################################################
+## Este comando es un bash que contiene el siguiente script, en caso las proximas actualizaciones no cuenten con este comando
+#!/bin/bash
+set -e
+DEBIAN_FRONTEND="noninteractive"
+DEBIAN_PRIORITY="critical"
+DEBCONF_NOWARNINGS="yes"
+export DEBIAN_FRONTEND DEBIAN_PRIORITY DEBCONF_NOWARNINGS
+apt update || echo failed to update index lists
+dpkg --configure -a || echo failed to fix interrupted upgrades
+apt --fix-broken --fix-missing install || echo failed to fix conflicts
+apt -y --fix-broken --fix-missing full-upgrade
+apt -y full-upgrade
+#################################################################################################################################
+#################################################################################################################################
+
+#luego verificar si no hay mas paquetes para actualizar:
+
+apt upgrade
+
+##3- Salir del modo root, regresar a modo usuario e ir a carpetad de decargas
+
+cd Downloads/
+
+## en la carpeta descargas, clonar repositorios
+
+git clone https://github.com/baskerville/bspwm.git
+git clone https://github.com/baskerville/sxhkd.git
+
+# Una vez clonados, se procede a hacer de forma indivifual:
+# ir a la carpeta bspwm
+cd bspwm
+# ejecutar los siguientes comandos:
+make
+sudo make install
+
+#Lo mismo para sxhdk, regresar la carpeta de descarga e ir a la carpeta sxhkd
+cd sxhkd/
+make
+sudo make install
+
+##########     NOTAS de Savitar    ##################
+#En caso de que os salga algún error relacionado con ‘xinerama‘, podéis ejecutar este comando:
+
+sudo apt install libxinerama1 libxinerama-dev
+#Finalmente, instalaremos ‘bspwm‘ con el comando ‘sudo apt install bspwm‘. Este es un paso que se me olvida aplicar en esta clase, pero aún así lo hacemos más adelante. Mi recomendación es que lo hagáis ya para evitar problemas futuros.
+
+#¡Recordad que está prohibido hacer un ‘apt upgrade‘!
+###########################################
+
+## 4- Ahora se debe configurar el Sxhkd, para ello se debe hacer lo siguiente:
+cd Downloads/
+mkdir ~/.config/{bspwm, sxhkd}
+
+## se puede verificar
+ls -l ~/.config/
+
+# se debe recordar que aun estamos en el directrorio de descargas. Por lo tanto ir a:
+cd bspwm/
+cd examples/
+ls -l #<- identificar los archivos bspwmrc y sxhkdrc
+
+# copiar esos archivos a los direcotrios creados en ~/.config/
+cp bspwmrc ~/.config/bspwm/
+cp sxhkdrc ~/.config/sxhkd/
+
+# se puede mostrar el contenido de ambos archivos con cat
+# dentro del directorio nuevo en ~/.config/sxhkd/
+nano sxhkdrc
+###############################################################################################################
+###############################################################################################################
+## dentro del archivo se debe hacer las siguinetes modificaciones:
+# ir a la seccion de emulador de terminal para cambiar por:
+# se debe tener instalado kitty
+
+>#terminal emulator
+super + Return
+	kitty
+	
+>#focus the node in the given direction
+super + {_,+ shift +} {Left,Down,Up,Right}
+	bspc node -{f,s} {west,south,north,east}
+	
+>#preselect the direction 
+super + ctrl + alt + {Left,Down,Up,Right}
+	bspc node -p {west,south,north,east}
+	
+>#cancel the preselection for the focused node
+super + ctrl + alt + space
+	bspc node -p cancel
+
+##Comentar las secciones
+>#expand a window by moving one its side outward
+>#contract a window by moving one its side inward
+
+## cambiar
+>#move a floating window
+super + shift + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+## Crear un nueva seccion
+># Custom resize
+alt + super + {Left,Down,Up,Right}
+	/home/[user]/.config/bspwm/scripts/bspwm_resize {west,south,north,east}
+	
+## **Salir del modo de edicion
+
+###############################################################################################################
+###############################################################################################################
+## teniendo en cuenta que se esta en la carpeta de descargas
+mkdir /home/[user]/.config/bspwm/scripts/
+touch /home/[user]/.config/bspwm/scripts/bspwm_resize
+
+# dar permisos de ejecucion
+chmod +x !$ 
+# o Ejecutar
+chmod +x /home/[user]/.config/bspwm/scripts/bspwm_resize
+
+##luego editar el archivo
+nano /home/[user]/.config/bspwm/scripts/bspwm_resize
+
+## copiar el script de abajo y guardar
+###################################################################################################
+###### Script para custom resize #########
+#!/usr/bin/env dash
+
+if bspc query -N -n focused.floating > /dev/null; then
+	step=20
+else
+	step=100
+fi
+
+case "$1" in
+	west) dir=right; falldir=left; x="-$step"; y=0;;
+	east) dir=right; falldir=left; x="$step"; y=0;;
+	north) dir=top; falldir=bottom; x=0; y="-$step";;
+	south) dir=top; falldir=bottom; x=0; y="$step";;
+esac
+
+bspc node -z "$dir" "$x" "$y" || bspc node -z "$falldir" "$x" "$y"
+############################################################################################################
+
+## 5- instalando Polybar, se tinene dos formas en caso de que el primer metodo falle
+## metodo 1 - estar en mnodo root y ejecutar este comando
+apt install cmake cmake-data pkg-config python3-sphinx libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python3-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev libjsoncpp-dev libmpdclient-dev libuv1-dev libnl-genl-3-dev
+
+# hay un comando que puede dar problemas y es python3-sphinx, se puede borrar
+
+# regresar a modo no privilegiado y clonar repositorio
+git clone --recursive https://github.com/polybar/polybar
+
+# ingresar a la carpeta Polybar y ejecutar los siguientes comandos
+cd polybar/
+mkdir build
+cmake ..
+make -j$(nproc)
+
+# si todo salio bien, se puede intentar revisar si polybar esta en el sistema
+which poolybar
+# si no hay respuesta
+
+sudo make install # y luego se puede intentar con which polybar
+
+## metodo 2 - estar en modo root y Ejecutar
+apt install polybar # no se recomienda mucho este metodo, porque puede instalar una version desactualizada
+
+## 6- Instlacion de Picom y retovando el sxhkdrc
+# como root ejecutar:
+
+apt install meson libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev libxcb-glx0-dev
+
+# regresar a modo NO privilegiado y en la carpeta de descargas
+git clone https://github.com/ibhagwan/picom.git
+
+# ingresar a la carpeta descargada, picom/
+cd picom/
+# Ejecutar
+
+git submodule update --init --recursive
+
+meson --buildtype=release . build
+
+ninja -C build
+
+sudo ninja -C build install
+# Ahora ingrear en modo root y Ejecutar:
+sudo su
+apt install rofi
+
+# regrear a modo no privilegiado
+exit
+
+# ejecutar para verficar la instlaacion de rofi:
+rofi -show run
+
+# configurar el alrchivo sxhkdrc
+nano ~/.config/sxhkd/sxhkdrc
+
+>#program launcher (ROFI)
+super + d
+	rofi -show run
+
+# Guardar y SAlir y en modo root ejecutar:
+sudo su
+apt install bspwm
+exit
+
+# en modo no privilegiado ejecutar, para habilitar bspwm:
+# al ejecutar el comando se puede reiniciar sesion y en el login habra opcion de iniciar con bspwm
+
+kill -9 -1 
+
+# regreasr al archivo sxhkdrc
+nano ~/.config/sxhkd/sxhkdrc
+># close and kill
+super + {_,shift+}q
+	bspc node -{c,k}
+	
+># quit/restart bspwm 
+super + shift +{q,r}
+	bspc {quit, wm -r}
+	
+############################################################################################################################
+############################################################################################################################
+# Si se quiere agregar programas ##
+>#firefox
+super + shift + f
+	[absolute dir] <- se obtine la ruta con: which firefox
+
+# Se debe reiniciar el sxhkdrc con super + esc
+
+## AQUI ES UN BUEN PUNTO PARA PROBAR TODAS LAS CONFIGURACIONES, AL INICIAR CON BSPWM LA PANTALLA ESTARA NEGRA PERO SERA POSIBLE 
+## ACCEDER A LA TERMINAL Y PROBAR TODO
+############################################################################################################################
+############################################################################################################################
+
+## 7- Para este punto si se desea se puede iniciar sesion con bspwm
+# Ir al navegador y buscar nerdfonts.com y decargar Hack nerd Font
+# en la carpeta de descargas
+mv Hack.zip /usr/local/share/fonts/
+cd /user/local/share/fonts/
+# descomprimir
+unzip Hack.zip
+
+# remover el comprimido, porque ya no es necesario
+rm HAck.zip
+
+# habilitar un clipboard bidireccional
+nano ~/.config/bspwm/bspwmrc
+
+# al final del archivo
+vmware-user-suid-wrapper &
+# guardar y cargar la configuracion del bspwm 
+# instalar el zsh
+apt install zsh
+
+# en modo privilegiado
+cd ~/.config/kitty/
+# verificar si tiene contenido, normalmente esta vacio, crear los archivos:
+
+nano kitty.conf
+
+#####################################################################################
+##----CONTENIDO DE kitty.conf
+enable_audio_bell no
+
+include color.ini
+
+font_family HackNerdFont
+font_size 13
+
+disable_ligatures never
+
+url_color #61afef
+
+url_style curly
+
+map ctrl+left neighboring_window left
+map ctrl+right neighboring_window right
+map ctrl+up neighboring_window up
+map ctrl+down neighboring_window down
+
+map f1 copy_to_buffer a
+map f2 paste_from_buffer a
+map f3 copy_to_buffer b
+map f4 paste_from_buffer b
+
+cursor_shape beam
+cursor_beam_thickness 1.8
+
+mouse_hide_wait 3.0
+detect_urls yes
+
+repaint_delay 10
+input_delay 3
+sync_to_monitor yes
+
+map ctrl+shift+z toggle_layout stack
+tab_bar_style powerline
+
+inactive_tab_background #e06c75
+active_tab_background #98c379
+inactive_tab_foreground #000000
+tab_bar_margin_color black
+
+map ctrl+shift+enter new_window_with_cwd
+map ctrl+shift+t new_tab_with_cwd
+
+background_opacity 0.95
+
+shell zsh
+#####################################################################################
+## crear:
+nano color.ini
+#####################################################################################
+## ------ CONTENIDO DE color.ini
+cursor_shape          Underline
+cursor_underline_thickness 1
+window_padding_width  20
+
+# Special
+foreground #a9b1d6
+background #1a1b26
+
+# Black
+color0 #414868
+color8 #414868
+
+# Red
+color1 #f7768e
+color9 #f7768e
+
+# Green
+color2  #73daca
+color10 #73daca
+
+# Yellow
+color3  #e0af68
+color11 #e0af68
+
+# Blue
+color4  #7aa2f7
+color12 #7aa2f7
+
+# Magenta
+color5  #bb9af7
+color13 #bb9af7
+
+# Cyan
+color6  #7dcfff
+color14 #7dcfff
+
+# White
+color7  #c0caf5
+color15 #c0caf5
+
+# Cursor
+cursor #c0caf5
+cursor_text_color #1a1b26
+
+# Selection highlight
+selection_foreground #7aa2f7
+selection_background #28344a 
+#####################################################################################
+## se puede cargar la configuracion con: super + shift + r
+## reiniciar terminal y ver los cambios (si se inicio con bspwm)
+# como root instalar los plyuggins para zsh
+apt install zsh-autosuggestions zsh-syntax-highlighting zsh-autocomplete
+
+# se debe actualizar kitty, para ello ir al repositorio de kittyb en Github y revisar la ultima version dentro del repositorio
+# buscar por:
+Linux amd64 binary bundle # y descargar
+
+# en modo ROOT ir a directorio
+cd /opt/
+# hacer un directorio
+mkdir kitty
+cd kitty
+
+# mover todo el comprimido descargado al directorio actual de trabajo 
+mv /home/[user]/Downloads/[kitty-file] . #kitty-0.28.1-x86_64.txz
+
+# descomprimir
+ls 
+7z x [kitty-file]
+ls
+7z x [kitty.tar]
+tar -xf [kitty.tar]
+rm [kitty.tar]
+
+cd bin/
+# una vez ingresado al directorio bin/ se verifica que esta la nueva kitty
+
+# para verificar 
+./kitty --version
+
+# se debe eliminar la kitty desactulizada
+apt remove kitty
+
+# NO SE DEBE CERRAR LA TERMINAL SIN ANTES CONFIGURAR PARA LA NUEVA VERSION DE kitty
+# en sxhkd/sxhkdrc
+nano /home/[user]/.config/sxhkd/sxhkdrc
+>#terminal emulator
+super + Return 
+	[kitty-absolute dir] # /opt/kitty/bin/kitty
+
+## Aplicar los cambios
+ctrl + esc
+super + q
+
+# salir modo root
+## para saber la configuracion en kitty y atajos
+cat /home/[user]/.config/kitty/kitty.conf
+
+# en modo ROOT, debe copiar la configuracion kitty para config de ROOT
+sudo su
+cd /root/.config/kitty/
+ls # estara vacio
+cp /home/[user]/.config/kitty/* . # copiar al directorio de trabajo actual
+ls # se verifica que se copio todo
+# salir de modo ROOT
+
+## 8- Trabjando para el fondo de pantalla, para este ejercicio se copiara el fondo de pantalla en el escritorio
+## pero se puede utilizar otro directorio de trabajo
+
+cd Desktop/
+mkdir [user-name]
+cd !$
+mkdir backgrounds
+cd !$
+## de la carpeta de descargas mover el dondo de pantalla al directorio actual de trabajo
+mv /home/[user]/Downloada/[image.ext] . 
+
+# para aabrir imagen desde la terminal instalar
+sudo apt install imagemagick
+# para abrir desde la terminal
+kitty +kitten icat [image.ext]
+
+# para establcer fondo de PANTALLA instalar feh
+sudo apt install feh
+# para establecer fondo de PANTALLA
+nano /home/[user]/.config/bspwm/bspwmrc
+# al final del archivo copiar
+feh --bg-fill [absolute-dir image.ext] &
+
+# para verificar se puede reiniciar sesion
+super + shift + q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
