@@ -436,7 +436,7 @@ cp /home/[user]/.config/kitty/* . # copiar al directorio de trabajo actual
 ls # se verifica que se copio todo
 # salir de modo ROOT
 
-## 8- Trabjando para el fondo de pantalla, para este ejercicio se copiara el fondo de pantalla en el escritorio
+## 8- Trabajando para el fondo de pantalla, para este ejercicio se copiara el fondo de pantalla en el escritorio
 ## pero se puede utilizar otro directorio de trabajo
 
 cd Desktop/
@@ -461,6 +461,38 @@ feh --bg-fill [absolute-dir image.ext] &
 
 # para verificar se puede reiniciar sesion
 super + shift + q
+
+## 9- Despliegue de la Polybar
+# en modo NO privilegiado
+cd Downloads/
+
+# clonar el repositorio
+clone https://github.com/VaughnValle/blue-sky.git
+
+# ingresar al directorio
+cd blue-sky
+cd polybar
+
+# copiar todo a:
+sp -r * ~/.config/polybar/
+
+# para cargar instrucciones de consola usar echo y redireccionar a bspwmrc
+echo '~/.config/polybar/ ./launch.sh' >> ~/.config/bspwm/bspwmrc
+
+# ir a fonts/
+cd fonts # recordar que seguimos en Downloads/polybar/..
+
+# copiar todo a:
+sudo cp * /usr/share/fonts/truetype
+
+# para que se apliquen los cambios
+fc-cache -v # resultado debe ser succeeded
+
+# para probar la Polybar
+super + shift + r
+
+## 10-
+
 
 
 
