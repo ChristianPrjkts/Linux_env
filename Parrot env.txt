@@ -1,5 +1,5 @@
 ###Linux env - Parrot OS
-##Instalando Bspwn y Sxhkd
+##Instalando Bspwm y Sxhkd
 
 ##1- Ejecutar  como root, qque tiene los paquetes necesarios para instalar bspwm y sxhdk:
 
@@ -467,7 +467,7 @@ super + shift + q
 cd Downloads/
 
 # clonar el repositorio
-clone https://github.com/VaughnValle/blue-sky.git
+git clone https://github.com/VaughnValle/blue-sky.git
 
 # ingresar al directorio
 cd blue-sky
@@ -491,12 +491,603 @@ fc-cache -v # resultado debe ser succeeded
 # para probar la Polybar
 super + shift + r
 
-## 10-
+## 10- Configurando los bordeados, las sombras y los difuminados con Picom
+# en modo no privilegiado. verificar que se tiene isntalado Picom
+which picom
+ 
+# ir al directorio config y crear un directorio picom para crear un archivo de configuracion
+cd ~/.config/
+ls # veificar que no haya directorio picom
+mkdir picom
+nano picom.conf
+
+## en el archivo copiar el sigiente codigo:
+#################################################################################################################
+## --- 	CONTENIDO DE picom.conf
+##############################################################################
+#                                  CORNERS                                   #
+##############################################################################
+# requires: https://github.com/sdhand/compton
+corner-radius = 20;
+rounded-corners-exclude = [
+  #"window_type = 'normal'",
+  #"class_g = 'firefox'",
+];
+
+round-borders = 20;
+round-borders-exclude = [
+  #"class_g = 'TelegramDesktop'",
+];
+
+# Specify a list of border width rules, in the format `PIXELS:PATTERN`, 
+# Note we don't make any guarantee about possible conflicts with the
+# border_width set by the window manager.
+#
+# example:
+#    round-borders-rule = [ "2:class_g = 'URxvt'" ];
+#
+round-borders-rule = [];
+
+##############################################################################
+#                                  SHADOWS                                   #
+##############################################################################
+
+# Enabled client-side shadows on windows. Note desktop windows 
+# (windows with '_NET_WM_WINDOW_TYPE_DESKTOP') never get shadow, 
+# unless explicitly requested using the wintypes option.
+#
+shadow = true
+
+# The blur radius for shadows, in pixels. (defaults to 12)
+shadow-radius = 15
+
+# The opacity of shadows. (0.0 - 1.0, defaults to 0.75)
+shadow-opacity = .5
+
+# The left offset for shadows, in pixels. (defaults to -15)
+shadow-offset-x = -15
+
+# The top offset for shadows, in pixels. (defaults to -15)
+shadow-offset-y = -15
+
+# Avoid drawing shadows on dock/panel windows. This option is deprecated,
+# you should use the *wintypes* option in your config file instead.
+#
+# no-dock-shadow = false
+
+# Don't draw shadows on drag-and-drop windows. This option is deprecated, 
+# you should use the *wintypes* option in your config file instead.
+#
+# no-dnd-shadow = false
+
+# Red color value of shadow (0.0 - 1.0, defaults to 0).
+# shadow-red = .18
+
+# Green color value of shadow (0.0 - 1.0, defaults to 0).
+# shadow-green = .19
+
+# Blue color value of shadow (0.0 - 1.0, defaults to 0).
+# shadow-blue = .20
+
+# Do not paint shadows on shaped windows. Note shaped windows 
+# here means windows setting its shape through X Shape extension. 
+# Those using ARGB background is beyond our control. 
+# Deprecated, use 
+#   shadow-exclude = 'bounding_shaped'
+# or 
+#   shadow-exclude = 'bounding_shaped && !rounded_corners'
+# instead.
+#
+# shadow-ignore-shaped = ''
+
+# Specify a list of conditions of windows that should have no shadow.
+#
+# examples:
+#   shadow-exclude = "n:e:Notification";
+#
+# shadow-exclude = []
+shadow-exclude = [
+    "class_g = 'firefox' && argb"
+];
+
+# Specify a X geometry that describes the region in which shadow should not
+# be painted in, such as a dock window region. Use 
+#    shadow-exclude-reg = "x10+0+0"
+# for example, if the 10 pixels on the bottom of the screen should not have shadows painted on.
+#
+# shadow-exclude-reg = "" 
+
+# Crop shadow of a window fully on a particular Xinerama screen to the screen.
+# xinerama-shadow-crop = false
+
+##############################################################################
+#                                  FADING                                    #
+##############################################################################
+
+# Fade windows in/out when opening/closing and when opacity changes,
+#  unless no-fading-openclose is used.
+#fading = true
+
+# Opacity change between steps while fading in. (0.01 - 1.0, defaults to 0.028)
+# fade-in-step = 0.028
+fade-in-step = 0.01;
+
+# Opacity change between steps while fading out. (0.01 - 1.0, defaults to 0.03)
+# fade-out-step = 0.03
+fade-out-step = 0.01;
+
+# The time between steps in fade step, in milliseconds. (> 0, defaults to 10)
+# fade-delta = 10
+
+# Specify a list of conditions of windows that should not be faded.
+# fade-exclude = []
+
+# Do not fade on window open/close.
+# no-fading-openclose = false
+
+# Do not fade destroyed ARGB windows with WM frame. Workaround of bugs in Openbox, Fluxbox, etc.
+# no-fading-destroyed-argb = false
+
+##############################################################################
+#                                   OPACITY                                  #
+##############################################################################
+
+# Opacity of inactive windows. (0.1 - 1.0, defaults to 1.0)
+inactive-opacity = 1.0
+
+# Opacity of window titlebars and borders. (0.1 - 1.0, disabled by default)
+frame-opacity = 1.0
+
+# Default opacity for dropdown menus and popup menus. (0.0 - 1.0, defaults to 1.0)
+opacity = 1.0
+
+# Let inactive opacity set by -i override the '_NET_WM_OPACITY' values of windows.
+# inactive-opacity-override = true
+inactive-opacity-override = false;
+
+# Default opacity for active windows. (0.0 - 1.0, defaults to 1.0)
+active-opacity = 1.0
+
+# Dim inactive windows. (0.0 - 1.0, defaults to 0.0)
+# inactive-dim = 0.0
+
+# Specify a list of conditions of windows that should always be considered focused.
+# focus-exclude = []
+focus-exclude = [ "class_g = 'Cairo-clock'" ];
+
+# Use fixed inactive dim value, instead of adjusting according to window opacity.
+# inactive-dim-fixed = 1.0
+
+# Specify a list of opacity rules, in the format `PERCENT:PATTERN`, 
+# like `50:name *= "Firefox"`. picom-trans is recommended over this. 
+# Note we don't make any guarantee about possible conflicts with other 
+# programs that set '_NET_WM_WINDOW_OPACITY' on frame or client windows.
+# example:
+#    opacity-rule = [ "80:class_g = 'URxvt'" ];
+#
+# opacity-rule = []
+
+# opacity-rule = [ "98:class_g = 'Polybar'" ]
+
+##############################################################################
+#                                    BLUR                                    #
+##############################################################################
+
+# Parameters for background blurring, see the *BLUR* section for more information.
+blur-method = "dual_kawase"
+blur-size = 2
+blur-strength = 3
+
+# Blur background of semi-transparent / ARGB windows. 
+# Bad in performance, with driver-dependent behavior. 
+# The name of the switch may change without prior notifications.
+#
+blur-background = true
+
+# Blur background of windows when the window frame is not opaque. 
+# Implies:
+#    blur-background 
+# Bad in performance, with driver-dependent behavior. The name may change.
+#
+#blur-background-frame = false
 
 
+# Use fixed blur strength rather than adjusting according to window opacity.
+#blur-background-fixed = false
 
 
+# Specify the blur convolution kernel, with the following format:
+# example:
+#   blur-kern = "5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
+#
+# blur-kern = ''
+# blur-kern = "3x3box";
 
+# Exclude conditions for background blur.
+# blur-background-exclude = []
+#blur-background-exclude = [
+#    "! name~=''",
+#    "name *= 'slop'",
+#    "window_type = 'dock'",
+#    "window_type = 'desktop'",
+#    "_GTK_FRAME_EXTENTS@:c"
+#];
+
+##############################################################################
+#                                    GENERAL                                 #
+##############################################################################
+
+# Daemonize process. Fork to background after initialization. Causes issues with certain (badly-written) drivers.
+# daemon = false
+
+# Specify the backend to use: `xrender`, `glx`, or `xr_glx_hybrid`.
+# `xrender` is the default one.
+#
+# backend = 'glx'
+backend = "glx";
+
+# Enable/disable VSync.
+# vsync = false
+vsync = false
+
+# Enable remote control via D-Bus. See the *D-BUS API* section below for more details.
+# dbus = false
+
+# Try to detect WM windows (a non-override-redirect window with no 
+# child that has 'WM_STATE') and mark them as active.
+#
+# mark-wmwin-focused = false
+mark-wmwin-focused = true;
+
+# Mark override-redirect windows that doesn't have a child window with 'WM_STATE' focused.
+# mark-ovredir-focused = false
+mark-ovredir-focused = true;
+
+# Try to detect windows with rounded corners and don't consider them 
+# shaped windows. The accuracy is not very high, unfortunately.
+#
+# detect-rounded-corners = false
+detect-rounded-corners = true;
+
+# Detect '_NET_WM_OPACITY' on client windows, useful for window managers
+# not passing '_NET_WM_OPACITY' of client windows to frame windows.
+#
+# detect-client-opacity = false
+detect-client-opacity = true;
+
+# Specify refresh rate of the screen. If not specified or 0, picom will 
+# try detecting this with X RandR extension.
+#
+# refresh-rate = 60
+refresh-rate = 0
+
+# Limit picom to repaint at most once every 1 / 'refresh_rate' second to 
+# boost performance. This should not be used with 
+#   vsync drm/opengl/opengl-oml
+# as they essentially does sw-opti's job already, 
+# unless you wish to specify a lower refresh rate than the actual value.
+#
+# sw-opti = 
+
+# Use EWMH '_NET_ACTIVE_WINDOW' to determine currently focused window, 
+# rather than listening to 'FocusIn'/'FocusOut' event. Might have more accuracy, 
+# provided that the WM supports it.
+#
+# use-ewmh-active-win = false
+
+# Unredirect all windows if a full-screen opaque window is detected, 
+# to maximize performance for full-screen windows. Known to cause flickering 
+# when redirecting/unredirecting windows.
+#
+# unredir-if-possible = false
+
+# Delay before unredirecting the window, in milliseconds. Defaults to 0.
+# unredir-if-possible-delay = 0
+
+# Conditions of windows that shouldn't be considered full-screen for unredirecting screen.
+# unredir-if-possible-exclude = []
+
+# Use 'WM_TRANSIENT_FOR' to group windows, and consider windows 
+# in the same group focused at the same time.
+#
+# detect-transient = false
+detect-transient = true
+
+# Use 'WM_CLIENT_LEADER' to group windows, and consider windows in the same 
+# group focused at the same time. 'WM_TRANSIENT_FOR' has higher priority if 
+# detect-transient is enabled, too.
+#
+# detect-client-leader = false
+detect-client-leader = true
+
+# Resize damaged region by a specific number of pixels. 
+# A positive value enlarges it while a negative one shrinks it. 
+# If the value is positive, those additional pixels will not be actually painted 
+# to screen, only used in blur calculation, and such. (Due to technical limitations, 
+# with use-damage, those pixels will still be incorrectly painted to screen.) 
+# Primarily used to fix the line corruption issues of blur, 
+# in which case you should use the blur radius value here 
+# (e.g. with a 3x3 kernel, you should use `--resize-damage 1`, 
+# with a 5x5 one you use `--resize-damage 2`, and so on). 
+# May or may not work with *--glx-no-stencil*. Shrinking doesn't function correctly.
+#
+# resize-damage = 1
+
+# Specify a list of conditions of windows that should be painted with inverted color. 
+# Resource-hogging, and is not well tested.
+#
+# invert-color-include = []
+
+# GLX backend: Avoid using stencil buffer, useful if you don't have a stencil buffer. 
+# Might cause incorrect opacity when rendering transparent content (but never 
+# practically happened) and may not work with blur-background. 
+# My tests show a 15% performance boost. Recommended.
+#
+# glx-no-stencil = false
+
+# GLX backend: Avoid rebinding pixmap on window damage. 
+# Probably could improve performance on rapid window content changes, 
+# but is known to break things on some drivers (LLVMpipe, xf86-video-intel, etc.).
+# Recommended if it works.
+#
+# glx-no-rebind-pixmap = false
+
+# Disable the use of damage information. 
+# This cause the whole screen to be redrawn everytime, instead of the part of the screen
+# has actually changed. Potentially degrades the performance, but might fix some artifacts.
+# The opposing option is use-damage
+#
+# no-use-damage = false
+use-damage = false
+
+# Use X Sync fence to sync clients' draw calls, to make sure all draw 
+# calls are finished before picom starts drawing. Needed on nvidia-drivers 
+# with GLX backend for some users.
+#
+# xrender-sync-fence = false
+
+# GLX backend: Use specified GLSL fragment shader for rendering window contents. 
+# See `compton-default-fshader-win.glsl` and `compton-fake-transparency-fshader-win.glsl` 
+# in the source tree for examples.
+#
+# glx-fshader-win = ''
+
+# Force all windows to be painted with blending. Useful if you 
+# have a glx-fshader-win that could turn opaque pixels transparent.
+#
+# force-win-blend = false
+
+# Do not use EWMH to detect fullscreen windows. 
+# Reverts to checking if a window is fullscreen based only on its size and coordinates.
+#
+# no-ewmh-fullscreen = false
+
+# Dimming bright windows so their brightness doesn't exceed this set value. 
+# Brightness of a window is estimated by averaging all pixels in the window, 
+# so this could comes with a performance hit. 
+# Setting this to 1.0 disables this behaviour. Requires --use-damage to be disabled. (default: 1.0)
+#
+# max-brightness = 1.0
+
+# Make transparent windows clip other windows like non-transparent windows do,
+# instead of blending on top of them.
+#
+# transparent-clipping = false
+
+# Set the log level. Possible values are:
+#  "trace", "debug", "info", "warn", "error"
+# in increasing level of importance. Case doesn't matter. 
+# If using the "TRACE" log level, it's better to log into a file 
+# using *--log-file*, since it can generate a huge stream of logs.
+#
+# log-level = "debug"
+log-level = "warn";
+
+# Set the log file.
+# If *--log-file* is never specified, logs will be written to stderr. 
+# Otherwise, logs will to written to the given file, though some of the early 
+# logs might still be written to the stderr. 
+# When setting this option from the config file, it is recommended to use an absolute path.
+#
+# log-file = '/path/to/your/log/file'
+
+# Show all X errors (for debugging)
+# show-all-xerrors = false
+
+# Write process ID to a file.
+# write-pid-path = '/path/to/your/log/file'
+
+# Window type settings
+# 
+# 'WINDOW_TYPE' is one of the 15 window types defined in EWMH standard: 
+#     "unknown", "desktop", "dock", "toolbar", "menu", "utility", 
+#     "splash", "dialog", "normal", "dropdown_menu", "popup_menu", 
+#     "tooltip", "notification", "combo", and "dnd".
+# 
+# Following per window-type options are available: ::
+# 
+#   fade, shadow:::
+#     Controls window-type-specific shadow and fade settings.
+# 
+#   opacity:::
+#     Controls default opacity of the window type.
+# 
+#   focus:::
+#     Controls whether the window of this type is to be always considered focused. 
+#     (By default, all window types except "normal" and "dialog" has this on.)
+# 
+#   full-shadow:::
+#     Controls whether shadow is drawn under the parts of the window that you 
+#     normally won't be able to see. Useful when the window has parts of it 
+#     transparent, and you want shadows in those areas.
+# 
+#   redir-ignore:::
+#     Controls whether this type of windows should cause screen to become 
+#     redirected again after been unredirected. If you have unredir-if-possible
+#     set, and doesn't want certain window to cause unnecessary screen redirection, 
+#     you can set this to `true`.
+#
+wintypes:
+{
+  tooltip = { fade = true; shadow = true; shadow-radius = 0; shadow-opacity = 1.0; shadow-offset-x = -20; shadow-offset-y = -20; opacity = 0.8; full-shadow = true; }; 
+  dnd = { shadow = false; }
+  dropdown_menu = { shadow = false; };
+  popup_menu    = { shadow = false; };
+  utility       = { shadow = false; };
+}
+#################################################################################################################
+##### FIN - DEL - CODIGO
+#################################################################################################################
+
+## se debe reiniciar BSPWM
+super + shift + r
+
+## ejecutar picom con bspwm, ir al directrorio`
+cd ~/.config/bspwm/bspwmrc
+# al final agregar
+picom &
+
+## se debe reiniciar BSPWM
+super + shift + r
+
+######## DENTRO DEL ARCHIVO DE CONFIGURACION - picom.conf
+# si se tiene una buena maquina virtual y fisica se puede mantener los sombreados, fading y blur
+# el blur` difuminado es a gusto y se puede conbfigurar sio se desea
+# para tener una terminal sion bordes se puede agregar la siguiente linea de comandos en :
+## ejecutar picom con bspwm, ir al directrorio`
+cd ~/.config/bspwm/bspwmrc
+
+# agregar
+bspc config border_width 0
+## se debe reiniciar BSPWM
+super + shift + r
+
+## 11- Configurando la zsh e instalando powerlevel10k 
+# en el navegador buscar: powerlevel10k https://github.com/romkatv/powerlevel10k
+# ejecutar en
+cd /home/[user]/
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
+
+# luego ejecuttar
+zsh
+# y se habilitara un menu de configuracion e Instlacion
+######
+# algunos parametros en la configuracion
+# show current time: no
+# separator: angled
+# head: sharpe
+# prompt height: one line
+# prompt spacing: sparse
+# icons: many icons
+# prompt flow: fluent
+# enable translen: y
+# aplicar cambios : y
+## - TOMAR NOTA DE LAS CONFIGURACIONES PARA HACER LO MISMO EN ROOT
+## una vex configurado, para quitar el mensaje de bienvenida:
+nano ~/.p10k.zsh
+# Comentar
+echo "WElcome..."
+
+# para quitar todas la etiquetas de la derecha
+nano ~/.p10k.zsh
+# comentar toda la seccion de POWERLEVEL9K_RIGHT_PROMPT
+# en otra seccion
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS	
+#agregar
+context
+command_execution_time
+status
+# guradar y cerrar
+
+# se debe aplicar todos los cambios a ROOT
+# en root
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
+
+# luego ejecuttar
+zsh # es posible que haya un error de insecure files
+#######--SOLUCION AL error
+# ejecutaraa:
+compaudit # en caso de que siga ejecutandose el instalador de powerlevel, hacer ctrl+c
+# el error debe ser: insecure files: /usr/local/share/zsh/site-functions/_bspc
+chmod root:root /usr/local/share/zsh/site-functions/_bspc # se hace esto porque root no es el propietario
+
+# se reinicia la terminal y ya no sale error al ejecutar:
+zsh # hacer las mismas configuraciones que en usuario no privilegiado
+## configurar para que zsh sea por defecto en root y usuario
+cat /etc/passwd | grep -E "^[user]|^root" # se observa que ambos usan bash
+# hacer
+usermod --shell [absolute-dir-zsh] root
+usermod --shell [absolute-dir-zsh] [user] # para saber ruta absoluta hacer which
+
+cat /etc/passwd | grep -E "^[user]|^root" # para verificar que ahora zsh esta por defecto
+
+## creando un link simbolico entre root y [user] para que lo cambios se compartan en zshrc
+ln -s -f /home/[user]/.zshrc .zshrc
+
+# para evitar y corregir algunos problemas
+nano ~/.zshrc
+
+source /home/[user]/... # antes souerce ~/root/..
+# en modo root hacer configuraciones en
+nano ~/.p10k.zsh # hacer las modificaciones para la derecha(quitar) e izquierda(agregar trees elementos)
+
+## para poner un icono para cuando se esta en modo root
+# en el mismo archivo # ~/.p10k.zsh
+typeset -g POWERLEVEL9K_CONTEXT_ROOT='[icon]' # extraer icono de nerdfonts.com https://www.nerdfonts.com/
+typeset -g POWERLEVEL9K_CONTEXT_PREFIX=''
+ ###########################################################################################
+ ## en caso salga hexadecimal, en otra terminal ejecutar ctrl+shift+u y copiar icono
+ #######################################################################################
+## se reinicia la terminal y verificar los cambios
+#para evitar que el historial se quede con residuos ir
+nano /home/[user]/.zshrc
+
+## modificar
+
+>#save type history for completion and easier life
+setopt histignorealldups sharehistory
+# comentar toda la seccion de autocompletado
+if [-f /usr/share/.../zsh-autocomplete.pluggin.zsh]; then
+	.
+	.
+	.
+fi
+## copiar un script de auto completado para reemplazar lo comentado
+###########################################################################################
+# Use modern completion system
+autoload -Uz compinit
+compinit
+ 
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=2
+eval "$(dircolors -b)"
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' menu select=long
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' verbose true
+ 
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+###########################################################################################
+
+## para borrar las negrillas en el indicador de la consola
+nano /home/[user]/.p10k.zsh
+
+## buscar : 
+POWERLEVEL9K_DIR_ANCHOR_BOLD=false
+# hacer lo mismo en root
+
+# para revertir cambios o tener el menu de configuracion de powerlevel10k
+p10k configure
 
 
 
