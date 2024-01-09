@@ -1218,12 +1218,126 @@ xrandr --output Virtual1 --mode 1920x1080
 
 ## y luego hacer super+shift+r
  # para reconfigurar y actualizar cambios
+## 13- Configurando la polybar
+# como usuario no privilegiado
+cd ~/.config/polybar
 
+# configurar el archivo
+nano launch.sh
 
+# comentar las lineas
+># polybar secondary -c ...
+># polybar top -c ...
 
+# guardar y abrir el archivo donde se cargan los elementos de la polybar
+nano ~/.config/polybar/current.ini
 
+# buscar la seccion [bar/log] y en el modulo central se busca "my-text-label"
+# buscar en [module/my-text-label]
+# para cmabiar el icono del menu inicio
+content = %{T7}[icon-NerdFonts]
 
+# en el  mismo archivo buscar "font-6 = ..." y debajo agregar
+font-7 = "Hack Nerd Font Mono:size = 13;3" # modificar el 13 por otro numero para cambiar tamano y 3 por otro para centrar
+ # para cambiar el fondo del menu inicio, buscar 
+[bar/log]
+background = ${color.bg}
 
+# en el archivo de polybar
+nano ~/.config/polybar/launch.sh
+
+# agregar la linea debajo de 
+># polybar secondary ...
+polybar ethernet_bar -c ~/.config/polybar/current.ini &
+
+# ir al archivo donde se carga el elemento
+nano ~/.config/polybar/current.ini
+
+# buscar por [bar/secondary] y agregar; 
+# hacer una copida del modulo para modificar
+[bar/ethernet_bar]
+
+modules_center = ethernet_status
+width = 10% # modificar tamano
+
+# crear un modulo debajo de [module/date]
+[module/ethernet_status]
+type = custom/script
+interval = 2
+exec = ~/.config/bin/ethernet_status.sh # se dirige a un archivo bash
+
+# crear el archivo bash
+cd ~/.config
+mkdir bin
+cd !$
+touch ethernet_status.sh
+chmod +x ethernet_status.sh
+nano ethernet_status.sh
+
+##############################################################################################################################################
+##---dentro del archivo
+
+#!bin/sh
+
+echo "%{F#2495e7}ICONO %{F#ffffff}$(/usr/sbin/ifconfig ens33 | grep "inet " | awk '{print $2}')%{u-}"
+
+##############################################################################################################################################
+
+## para el vpn
+nano ~/.config/polybar/launch.sh
+
+# debajo de:
+
+polybar ethernet_bar ...
+# agregar
+polybar vpn_bar -c ~/.config/polybar/current
+
+# al igual que con ethernet_bar
+nano ~/.config/polybar/launch.sh
+
+#debajo de [bar/ethernet_bar] hacer una copia del modulo y modificar
+[bar/vpn_bar]
+
+offset-x = 15%
+width = 11%
+modules-center = vpn_status
+
+# en el mismo archivo debajo de [module/ethernet_status]
+[module/vpn_status]
+type = custom/script
+interval = 2
+exec = ~/.config/bin/vpn_status.sh
+
+#guardar y salir
+cd ~/.config/bin
+touch vpn_status.sh
+chmod +x vpn_status.sh
+
+#instalar la vpn, puede ser por ejemplo de HAck the box https://help.hackthebox.com/en/articles/5185687-introduction-to-lab-access
+# para ejecutar una vez descargada
+sudo su
+openvpn [name].ovpn # ya se conectara a la red vpn
+
+# para verificar
+ifcofig
+>>> tun0 # interface de la vpn, en su defecto reemplazar por la internface que tiene la maquina para vpn
+
+# regresar al; archivo de configuracion vpn_status.sh
+nano ~/.config/bin/vpn_status.sh
+
+#######################################################################################################
+
+#!/bin/sh
+ 
+IFACE=$(/usr/sbin/ifconfig | grep tun0 | awk '{print $1}' | tr -d ':')
+ 
+if [ "$IFACE" = "tun0" ]; then
+    echo "%{F#1bbf3e}ICONO %{F#ffffff}$(/usr/sbin/ifconfig tun0 | grep "inet " | awk '{print $2}')%{u-}"
+else
+    echo "%{F#1bbf3e}ICONO %{u-} Disconnected"
+fi
+
+#######################################################################################################
 
 
 
