@@ -1339,6 +1339,79 @@ fi
 
 #######################################################################################################
 
+## 14- Creando nuevos modulos en la Polybar
+# para configurar el lado derecho de la polybar, se debe hacer como NO ROOT
+cd ~/.config/polybar
+nano launch.sh
 
+# en el lador derecho ## RIght bar agregar
+polybar victim_target -c ~/.config/polybar/currrent.ini &
+
+# luego modificar el archivo
+nano current.ini
+# debajo de [bar/vpn_bar]  hacer una copia y modificar
+[bar/victim_target]
+width = 17%
+offset-x = 79.6%
+modules-center = target_to_hack
+
+# luego debajo de [module/vpn_status] agregar
+[module/target_to_hack]
+type = custom/script
+interval = 2
+exec = ~/.config/bin/target_to_hack.sh
+
+# se debe crerar el archivo target_to_hack.sh
+cd ~/.config/bin
+touch target_to_hack.sh
+chmod +x target_to_hack.sh
+nano target_to_hack.sh
+# agregar 
+########################################################################################
+
+#!/bin/bash
+
+ip_address=$(/bin/cat /home/[user]/.config/bin/target | awk '{print $1}')
+machine_name=$(/bin/cat /home/[user]/.config/bin/target | awk '{print $2}')
+
+if [ $ip_address ] && [ $machine_name ]; then
+    echo "%{F#e51d0b}ICONO %{F#ffffff}$ip_address%{u-} - $machine_name"
+else
+    echo "%{F#e51d0b}ICONO %{u-}%{F#ffffff} No target"
+fi
+
+########################################################################################
+
+# crear un archovo target donde se almacenara la info de la maquina victima
+touch /home/[user]/.config/bin/target
+
+# abrir el archivo
+nano ~/.zshrc
+
+## crear funciones, en la seccion de cunciones debajo:
+############################################################################
+
+function settarget(){
+    ip_address=$1
+    machine_name=$2
+    echo "$ip_address $machine_name" > /home/[user]/.config/bin/target
+}
+
+function cleartarget(){
+    echo '' > /home/[user]/.config/bin/target
+}
+
+############################################################################
+# para usar
+settarget "[name] [IP]"
+cleartarget
+
+## configurar seleccionador de ventanas
+cd ~/.config/polybar
+nano workspace.ini
+label-active-foreground = ${color.red}
+label-occupied-foreground = ${color.yellow}
+
+## 15-
 
 
