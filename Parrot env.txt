@@ -1549,4 +1549,18 @@ sudo make install
 
 
 
-## 16-
+## 16- Instalacion de FZF
+
+# ir al repositorio de fzf https://github.com/junegunn/fzf
+# en modo no privilegiado
+cd 
+# usanfo git
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+
+# una vez instalado probar 
+cd / # ir a la raiz
+cat [ctr+T] # para configurar
+ # hacer lo mismo para ROOT
+
+
