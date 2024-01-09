@@ -67,7 +67,7 @@ sudo apt install libxinerama1 libxinerama-dev
 
 ## 4- Ahora se debe configurar el Sxhkd, para ello se debe hacer lo siguiente:
 cd Downloads/
-mkdir ~/.config/{bspwm, sxhkd}
+mkdir ~/.config/{bspwm,sxhkd}
 
 ## se puede verificar
 ls -l ~/.config/
