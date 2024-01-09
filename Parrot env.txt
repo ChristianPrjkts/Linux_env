@@ -1412,6 +1412,141 @@ nano workspace.ini
 label-active-foreground = ${color.red}
 label-occupied-foreground = ${color.yellow}
 
-## 15-
+## 15- Creacion de plugins en la zsh y conf;igurando NVChad con  neovim e i3lock-fancy
+# en modo ROOT, se instalara un plugin para agregar sudo al comando presionanado ESC dos veces
+sudo su
+cd /usr/share/
+mkdir zsh-sudo
+chown [user]:[user] zsh-sudo
+cd !$
+su [user] # regresando a usuario
+
+# descargar modo wget del repositorio https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/sudo/sudo.plugin.zsh
+wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/sudo/sudo.plugin.zsh
+
+# dar permiso de ejecucion
+chmod +x sudo.plugin.zsh
+
+# copiar la ruta con pwd ej: /usr/share/zsh-sudo/sudo.plugin.zsh
+# abrir el archivo 
+nano ~/.zshrc
+
+## en la seccion de #Fish like syntax ..., al final agregar
+if [ -f /usr/share/zsh-sudo/sudo.plugin.zsh ]; then
+	source /usr/share/zsh-sudo/sudo.plugin.zsh
+fi
 
 
+## se pueden agregar varios plugins cuanto se deseen
+# en https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
+
+
+## COnfigurando el neovim
+# En modo root
+apt install npm
+
+# instalar noevim NVChad desde github https://nvchad.com/ 
+# en modo usuario no privilegiado
+ls ~/.config/nvim
+# si hay contenido
+rm -r ~/.config/nvim/
+
+# luego clonar
+cd ~
+git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
+
+# se debe ir a repositorio https://github.com/neovim/neovim/releases y buscar la ultima version estable
+# seleccionar el tipo de archivo: nvim-linux64.tar.gz
+# en modo root
+sudo su
+cd /opt/
+ # mover lo descargado al durectorio actual de trabajo
+mv /home/[user]/Downloads/nvim-linux64.tar.gz .
+
+# luego ejecutar
+tar -xf nvim-linux64.tar.gz
+
+# borrar el comprimido
+rm nvim-linux64.tar.gz
+
+#ir a:
+cd nvim-linux64
+cd bin
+
+# como usuario no privilegiado
+./nvim
+
+# sale un mensaje de instalar ejemplo, se pone n y enter
+# se instalara automaticamente
+# tomar en ceunta que solo se ejecuta con ./nvim
+# se peude borra el nvim
+sudo apt remove neovim
+
+# ahora se debe cofigurar el archivo zshrc para contemplarlo dentro del PATH
+nano ~/.zshrc
+
+# dentro de la linea copiar la ruta absoluta ej: /opt/nvim-linux64/bin
+export PATH=~/.local/...:/[absolute-dir-nvim]:/...:$PATH # no olvidar los ::
+# guardar y salir
+
+# dentro de nvim se puede abrir un arbol de directorios con 
+: NvimTreeToggle # tambnien sirve para cerrar arbol
+
+### si se quiere eliminar las sugeciones:
+# ir a:
+cd ~/.config/nvim
+cd lua
+cd plugins
+nvim init.lua
+
+# filtrar por cmp y borrar o comentar toda la seccion
+--load luasnips temp related in insert mode only
+
+# se debe hacer lo mismo para ROOT ya que tiene su propio directorio
+sudo su 
+cd ~/.config/nvim
+ls # se debe borrar contenido de init.vim
+
+cd ..
+rm -rf nvim
+# copiar al directorio actual de trabajo l;a configuracion de [user]
+cp -r /home/[user]/.config/nvim .
+cd nvim # se debe poder encontrar los archivos que se tiene en [user]
+
+# se ejecuta 
+nvim # para instalar en root
+
+## Tambien se puede usar github copilit para sistencia de codigo, revisar tutoriales
+
+## configurando Rofi
+# seleccionar tema rofi
+rofi-theme-selector
+# agregar un tema, en descargas asegurarse de tener nord.rasi
+# crear doble directorio para temas temas
+mkdir -p ~/.config/rofi/themes
+# copiar el archivo al nuevo directorio
+cp nord.rasi ~/.config/rofi/themes
+
+# de esa forma se agrega un directorio y se puede seleccionar en el seleccionador
+
+## instalando un capturador de pantalla para hacer informes, flameshot y un navegador de directorios ranger
+sudo su
+apt install flameshot ranger
+
+# para ejcutar el navegador de directorios
+ranger
+
+# para ejecutar el capturador de pantalla en modo gui
+flameshot gui
+
+## isntalando i3lock-fancy para bloquear pantalla, en descargas
+
+git clone https://github.com/meskarune/i3lock-fancy.git
+cd i3lock-fancy
+sudo make install
+
+### Se puede configurar en sxhkd para shortcuts por teclado
+
+
+
+## 16-
