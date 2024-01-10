@@ -168,6 +168,7 @@ git clone --recursive https://github.com/polybar/polybar
 # ingresar a la carpeta Polybar y ejecutar los siguientes comandos
 cd polybar/
 mkdir build
+cd build
 cmake ..
 make -j$(nproc)
 
@@ -180,7 +181,7 @@ sudo make install # y luego se puede intentar con which polybar
 ## metodo 2 - estar en modo root y Ejecutar
 apt install polybar # no se recomienda mucho este metodo, porque puede instalar una version desactualizada
 
-## 6- Instlacion de Picom y retovando el sxhkdrc
+## 6- Instalacion de Picom y retovando el sxhkdrc
 # como root ejecutar:
 
 apt install meson libxext-dev libxcb1-dev libxcb-damage0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-render-util0-dev libxcb-render0-dev libxcb-composite0-dev libxcb-image0-dev libxcb-present-dev libxcb-xinerama0-dev libpixman-1-dev libdbus-1-dev libconfig-dev libgl1-mesa-dev libpcre2-dev libevdev-dev uthash-dev libev-dev libx11-xcb-dev libxcb-glx0-dev
@@ -380,7 +381,7 @@ selection_background #28344a
 #####################################################################################
 ## se puede cargar la configuracion con: super + shift + r
 ## reiniciar terminal y ver los cambios (si se inicio con bspwm)
-# como root instalar los plyuggins para zsh
+# como root instalar los plugins para zsh
 apt install zsh-autosuggestions zsh-syntax-highlighting zsh-autocomplete
 
 # se debe actualizar kitty, para ello ir al repositorio de kittyb en Github y revisar la ultima version dentro del repositorio
@@ -457,7 +458,7 @@ sudo apt install feh
 # para establecer fondo de PANTALLA
 nano /home/[user]/.config/bspwm/bspwmrc
 # al final del archivo copiar
-feh --bg-fill [absolute-dir image.ext] &
+/usr/bin/feh --bg-fill [absolute-dir image.ext] &
 
 # para verificar se puede reiniciar sesion
 super + shift + q
@@ -474,7 +475,7 @@ cd blue-sky
 cd polybar
 
 # copiar todo a:
-sp -r * ~/.config/polybar/
+cp -r * ~/.config/polybar/
 
 # para cargar instrucciones de consola usar echo y redireccionar a bspwmrc
 echo '~/.config/polybar/ ./launch.sh' >> ~/.config/bspwm/bspwmrc
@@ -499,6 +500,7 @@ which picom
 cd ~/.config/
 ls # veificar que no haya directorio picom
 mkdir picom
+cd picom
 nano picom.conf
 
 ## en el archivo copiar el sigiente codigo:
@@ -944,6 +946,7 @@ super + shift + r
 
 ## ejecutar picom con bspwm, ir al directrorio`
 cd ~/.config/bspwm/bspwmrc
+nano bspwmrc
 # al final agregar
 picom &
 
@@ -956,7 +959,7 @@ super + shift + r
 # para tener una terminal sion bordes se puede agregar la siguiente linea de comandos en :
 ## ejecutar picom con bspwm, ir al directrorio`
 cd ~/.config/bspwm/bspwmrc
-
+nano bspwmrc
 # agregar
 bspc config border_width 0
 ## se debe reiniciar BSPWM
@@ -966,6 +969,7 @@ super + shift + r
 # en el navegador buscar: powerlevel10k https://github.com/romkatv/powerlevel10k
 # ejecutar en
 cd /home/[user]/
+
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 
@@ -1035,18 +1039,18 @@ nano ~/.p10k.zsh # hacer las modificaciones para la derecha(quitar) e izquierda(
 
 ## para poner un icono para cuando se esta en modo root
 # en el mismo archivo # ~/.p10k.zsh
-typeset -g POWERLEVEL9K_CONTEXT_ROOT='[icon]' # extraer icono de nerdfonts.com https://www.nerdfonts.com/
+typeset -g POWERLEVEL9K_CONTEXT_ROOT_TEMPLATE='[icon]' # extraer icono de nerdfonts.com https://www.nerdfonts.com/ | revisar esta parte del icono linea correcta
 typeset -g POWERLEVEL9K_CONTEXT_PREFIX=''
  ###########################################################################################
  ## en caso salga hexadecimal, en otra terminal ejecutar ctrl+shift+u y copiar icono
  #######################################################################################
 ## se reinicia la terminal y verificar los cambios
 #para evitar que el historial se quede con residuos ir
-nano /home/[user]/.zshrc
+nano /home/[user]/.zshrc # nano ~/.zshrc
 
 ## modificar
 
->#save type history for completion and easier life
+>#save type history for completion and easier life | history configuration
 setopt histignorealldups sharehistory
 # comentar toda la seccion de autocompletado
 if [-f /usr/share/.../zsh-autocomplete.pluggin.zsh]; then
@@ -1203,7 +1207,7 @@ nano ~/.config/bspwm/bspwmrc
 # debajo de Picom poner
 wmname LG3D &
 
-## volcer a cargar el entorno super+shift+u
+## volver a cargar el entorno super+shift+u
 
 # y probar que en burpsuite salga todo bien
 
@@ -1218,6 +1222,7 @@ xrandr --output Virtual1 --mode 1920x1080
 
 ## y luego hacer super+shift+r
  # para reconfigurar y actualizar cambios
+ 
 ## 13- Configurando la polybar
 # como usuario no privilegiado
 cd ~/.config/polybar
@@ -1259,6 +1264,7 @@ nano ~/.config/polybar/current.ini
 
 modules_center = ethernet_status
 width = 10% # modificar tamano
+font-7 = "Hack Nerd Font Mono:size=22;5" # cambiar tamano de ese elemento independientemente
 
 # crear un modulo debajo de [module/date]
 [module/ethernet_status]
@@ -1521,7 +1527,7 @@ nvim # para instalar en root
 ## configurando Rofi
 # seleccionar tema rofi
 rofi-theme-selector
-# agregar un tema, en descargas asegurarse de tener nord.rasi
+# agregar un tema, en descargas asegurarse de tener nord.rasi, esta en blue-sky en descargas
 # crear doble directorio para temas temas
 mkdir -p ~/.config/rofi/themes
 # copiar el archivo al nuevo directorio
