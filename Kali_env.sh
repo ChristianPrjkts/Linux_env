@@ -26,6 +26,17 @@ cd bspwm
 make
 sudo make install
 
+##########     NOTAS de Savitar    ##################
+#En caso de que os salga algún error relacionado con ‘xinerama‘, podéis ejecutar este comando:
+# tal vez isntalar de todos modos
+
+sudo apt install libxinerama1 libxinerama-dev
+
+## tambien se pued tener el error fatal error: xcb/xcb_aux.h: No such file or directory
+# solucionar con 
+sudo apt-get install libxcb1-dev libxcb-keysyms1-dev libxcb-icccm4-dev libxcb-randr0-dev libxcb-util0-dev libxcb-ewmh-dev libxcb-shape0-dev libxcb-xinerama0-dev
+
+
 # regresar atras
 cd ..
 
@@ -34,11 +45,7 @@ cd sxhkd/
 make
 sudo make install
 
-##########     NOTAS de Savitar    ##################
-#En caso de que os salga algún error relacionado con ‘xinerama‘, podéis ejecutar este comando:
-# tal vez isntalar de todos modos
 
-sudo apt install libxinerama1 libxinerama-dev
 
 ## 4- Ahora se debe configurar el Sxhkd, para ello se debe hacer lo siguiente:
 cd Downloads/
@@ -164,7 +171,7 @@ cmake ..
 make -j$(nproc)
 
 # si todo salio bien, se puede intentar revisar si polybar esta en el sistema
-which poolybar
+which polybar
 # si no hay respuesta
 
 sudo make install # y luego se puede intentar con which polybar
@@ -194,7 +201,7 @@ meson --buildtype=release . build
 
 ## puede salir un error de libcre, se puede  isntalar en modo ROOT
 sudo su 
-apt install libcre3 libcre3-dev
+sudo apt-get install libpcre3-dev
 
 exit
 # voilver a ejecutar meson
@@ -277,8 +284,7 @@ sudo su
 apt install zsh
 exit
 
-# en modo privilegiado
-sudo su
+# en modo NO privilegiado
 cd ~/.config/kitty/
 # verificar si tiene contenido, normalmente esta vacio, crear los archivos:
 
@@ -334,7 +340,7 @@ background_opacity 0.95
 
 shell zsh
 #####################################################################################
-## crear:
+## crear: 
 nano color.ini
 #####################################################################################
 ## ------ CONTENIDO DE color.ini
@@ -455,10 +461,10 @@ cd blue-sky
 cd polybar
 
 # copiar todo a:
-cp -r * ~/.config/polybar/
+cp -r * ~/.config/polybar/ # si no existe el directorio en config, crear directorio polybar y copiar
 
 # para cargar instrucciones de consola usar echo y redireccionar a bspwmrc
-echo '~/.config/polybar/ ./launch.sh' >> ~/.config/bspwm/bspwmrc
+echo '~/.config/polybar/launch.sh' >> ~/.config/bspwm/bspwmrc
 
 # ir a fonts/
 cd fonts # recordar que seguimos en Downloads/polybar/..
@@ -783,7 +789,7 @@ detect-transient = true
 detect-client-leader = true
 
 # Resize damaged region by a specific number of pixels. 
-# A positive value enlarges it while a negative one shrinks it. 
+# A positive value arges it while a negative one shrinks it. 
 # If the value is positive, those additional pixels will not be actually painted 
 # to screen, only used in blur calculation, and such. (Due to technical limitations, 
 # with use-damage, those pixels will still be incorrectly painted to screen.) 
@@ -950,6 +956,7 @@ super + shift + r
 # ejecutar en
 cd /home/[user]/
 
+# marcar las dos lineas
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 
@@ -1011,7 +1018,7 @@ cat /etc/passwd | grep -E "^[user]|^root" # para verificar que ahora zsh esta po
 ln -s -f /home/[user]/.zshrc .zshrc
 
 # para evitar y corregir algunos problemas
-nano ~/.zshrc
+nano ~/.zshrc # modo ROOT
 
 source /home/[user]/... # antes souerce ~/root/..
 # en modo root hacer configuraciones en
@@ -1030,8 +1037,18 @@ nano /home/[user]/.zshrc # nano ~/.zshrc
 
 ## modificar
 
->#save type history for completion and easier life | history configuration
+># History configurations
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
 setopt histignorealldups sharehistory
+#setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds >
+#setopt hist_ignore_dups       # ignore duplicated commands history list
+#setopt hist_ignore_space      # ignore commands that start with space
+#setopt hist_verify            # show command with history expansion to user before >
+#setopt share_history         # share command history data
+
+
 # comentar toda la seccion de autocompletado
 if [-f /usr/share/.../zsh-autocomplete.pluggin.zsh]; then
 	.
@@ -1153,7 +1170,7 @@ nano ~/.zshrc
 export LS_COLORS="rs=0:di=34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:"
 
 # en el mismo archivo crear alias
-# en la seccion alias copiar lo siguiente
+# en la seccion alias copiar lo siguiente, en kali puede er depues de la linea anterior: export LS_COLORS...
 ###################################################################################
 # Custom Aliases
 # -----------------------------------------------
@@ -1170,7 +1187,7 @@ alias lla='lsd -lha --group-dirs=first'
 alias ls='lsd --group-dirs=first'
 ###################################################################################
 ## el alias nos permite usar comandos como bat y lsd, con cat y ls
-
+## hacer lo mismo para ROOT
 ## se debe rinicikar la terminal
 
 ## arrglando incompatibilidad con herramientas basadas en JAVA
@@ -1187,7 +1204,7 @@ nano ~/.config/bspwm/bspwmrc
 # debajo de Picom poner
 wmname LG3D &
 
-## volver a cargar el entorno super+shift+u
+## volver a cargar el entorno super+shift+q
 
 # y probar que en burpsuite salga todo bien
 
@@ -1223,7 +1240,7 @@ nano ~/.config/polybar/current.ini
 content = %{T7}[icon-NerdFonts]
 
 # en el  mismo archivo buscar "font-6 = ..." y debajo agregar
-font-7 = "Hack Nerd Font Mono:size = 13;3" # modificar el 13 por otro numero para cambiar tamano y 3 por otro para centrar
+font-7 = "Hack Nerd Font Mono:size=13;3" # modificar el 13 por otro numero para cambiar tamano y 3 por otro para centrar
  # para cambiar el fondo del menu inicio, buscar 
 [bar/log]
 background = ${color.bg}
@@ -1244,7 +1261,7 @@ nano ~/.config/polybar/current.ini
 
 modules_center = ethernet_status
 width = 10% # modificar tamano
-font-7 = "Hack Nerd Font Mono:size=22;5" # cambiar tamano de ese elemento independientemente
+font-7 = "Hack Nerd Font Mono:size=22;5" # cambiar tamano de ese elemento independientemente, debajo de bottom
 
 # crear un modulo debajo de [module/date]
 [module/ethernet_status]
@@ -1268,6 +1285,17 @@ nano ethernet_status.sh
 echo "%{F#2495e7}ICONO %{F#ffffff}$(/usr/sbin/ifconfig ens33 | grep "inet " | awk '{print $2}')%{u-}"
 
 ##############################################################################################################################################
+##############################################################################################################################################
+# si no funciona, otra alternativa puede ser, CHatGPT:
+#!/bin/sh
+
+# Obtener la dirección IP de la interfaz eth0
+ip_address=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+
+# Mostrar la dirección IP en la salida estándar
+echo "%{F#2495e7}ICONO %{F#ffffff}$ip_address %{u-}"
+
+###############################################################################################################################################
 
 ## para el vpn
 nano ~/.config/polybar/launch.sh
@@ -1276,10 +1304,10 @@ nano ~/.config/polybar/launch.sh
 
 polybar ethernet_bar ...
 # agregar
-polybar vpn_bar -c ~/.config/polybar/current
+polybar vpn_bar -c ~/.config/polybar/current &
 
 # al igual que con ethernet_bar
-nano ~/.config/polybar/launch.sh
+nano ~/.config/polybar/current.ini
 
 #debajo de [bar/ethernet_bar] hacer una copia del modulo y modificar
 [bar/vpn_bar]
@@ -1395,7 +1423,9 @@ cleartarget
 ## configurar seleccionador de ventanas
 cd ~/.config/polybar
 nano workspace.ini
+#[module/workspaces]
 label-active-foreground = ${color.red}
+
 label-occupied-foreground = ${color.yellow}
 
 ## 15- Creacion de plugins en la zsh y conf;igurando NVChad con  neovim e i3lock-fancy
@@ -1422,6 +1452,7 @@ if [ -f /usr/share/zsh-sudo/sudo.plugin.zsh ]; then
 	source /usr/share/zsh-sudo/sudo.plugin.zsh
 fi
 
+# para probar, hacerlo en una nueva ventana de terminal o reiniciar terminal
 
 ## se pueden agregar varios plugins cuanto se deseen
 # en https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
@@ -1475,6 +1506,12 @@ nano ~/.zshrc
 
 # dentro de la linea copiar la ruta absoluta ej: /opt/nvim-linux64/bin
 export PATH=~/.local/...:/[absolute-dir-nvim]:/...:$PATH # no olvidar los ::
+
+#si no existe, se puede crear esta linea debajo de WORDCHARDS...
+# en una consola aparte se hace 
+echo $PATH # se copia la salida en este formato
+export PATH=... # y se agrega la ruta absoluta de nvim
+
 # guardar y salir
 
 # dentro de nvim se puede abrir un arbol de directorios con 
@@ -1488,7 +1525,7 @@ cd plugins
 nvim init.lua
 
 # filtrar por cmp y borrar o comentar toda la seccion
---load luasnips temp related in insert mode only
+--load luasnips cmp related in insert mode only
 
 # se debe hacer lo mismo para ROOT ya que tiene su propio directorio
 sudo su 

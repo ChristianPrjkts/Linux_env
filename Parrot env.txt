@@ -271,7 +271,7 @@ vmware-user-suid-wrapper &
 # instalar el zsh
 apt install zsh
 
-# en modo privilegiado
+# en modo  NO privilegiadoexit
 cd ~/.config/kitty/
 # verificar si tiene contenido, normalmente esta vacio, crear los archivos:
 
