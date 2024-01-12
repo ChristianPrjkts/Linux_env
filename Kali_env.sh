@@ -392,8 +392,11 @@ cursor_text_color #1a1b26
 selection_foreground #7aa2f7
 selection_background #28344a 
 #####################################################################################
+## PARA SABER MAS SOBRE LOS ATAJOS DE KITTY VISITAR: https://sw.kovidgoyal.net/kitty/conf/#shortcut-kitty.Close-tab
+
 ## se puede cargar la configuracion con: super + shift + r
 ## reiniciar terminal y ver los cambios (si se inicio con bspwm)
+
 # como root instalar los plugins para zsh
 apt install zsh-autosuggestions zsh-syntax-highlighting
 
