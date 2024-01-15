@@ -1,0 +1,26 @@
+### Modo Normal:
+
+- `i`: Cambia al modo Insertar.
+- `dd`: Borra la línea actual.
+- `yy`: Copia la línea actual.
+- `p`: Pega el contenido copiado o cortado después de la posición del cursor.
+- `u`: Deshace la última acción.
+- `Ctrl + r`: Rehace la última acción deshecha.
+- `:q`: Cierra el archivo.
+- `:wq`: Guarda y cierra el archivo.
+- `:q!`: Cierra el archivo sin guardar cambios.
+
+### Modo Visual:
+
+- `v`: Inicia el modo visual para seleccionar texto.
+- `V`: Inicia el modo visual para seleccionar líneas completas.
+
+### Modo Comando:
+
+- `:sustituir/patron/sustituto/g`: Sustituye todas las ocurrencias de "patron" por "sustituto" en el archivo.
+- `:sp nombre_archivo`: Divide la ventana horizontalmente y abre el archivo especificado.
+- `:vsp nombre_archivo`: Divide la ventana verticalmente y abre el archivo especificado.
+- `:tabnew`: Abre una nueva pestaña.
+- `:tabnext` (o `:tabn`): Cambia a la pestaña siguiente.
+- `:tabprev` (o `:tabp`): Cambia a la pestaña anterior.
+
